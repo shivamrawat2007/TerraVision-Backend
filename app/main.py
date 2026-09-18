@@ -18,9 +18,21 @@ from .services.audit import audit_event
 
 app=FastAPI(title="SIH26227 â€” Earth Observation Intelligence Platform",version="5.0.0")
 settings.ensure_dirs()
-app.mount("/tiles", StaticFiles(directory=str(settings.ROOT / "indexes" / "real_remoteclip" / "tiles")), name="tiles")
-app.mount("/artifacts",StaticFiles(directory=str(settings.TMP_DIR)),name="artifacts")
-app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_credentials=True,allow_methods=["*"],allow_headers=["*"])
+
+TILES_DIR = settings.ROOT / "indexes" / "real_remoteclip" / "tiles"
+TILES_DIR.mkdir(parents=True, exist_ok=True)
+
+app.mount(
+    "/tiles",
+    StaticFiles(directory=str(TILES_DIR)),
+    name="tiles"
+)
+
+app.mount(
+    "/artifacts",
+    StaticFiles(directory=str(settings.TMP_DIR)),
+    name="artifacts"
+)
 
 @app.on_event("startup")
 def startup(): init_db()
