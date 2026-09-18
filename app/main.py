@@ -17,6 +17,13 @@ from .services.visualize import change_heatmap
 from .services.audit import audit_event
 
 app=FastAPI(title="SIH26227 â€” Earth Observation Intelligence Platform",version="5.0.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 settings.ensure_dirs()
 
 TILES_DIR = settings.ROOT / "indexes" / "real_remoteclip" / "tiles"
