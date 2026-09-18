@@ -34,8 +34,15 @@ class EmbeddingService:
                 raise FileNotFoundError(f"RemoteCLIP checkpoint not found: {ckpt}")
             arch = __import__('os').getenv("REMOTECLIP_ARCH", "ViT-B-32")
             self.model, _, self.preprocess = open_clip.create_model_and_transforms(
-                arch, pretrained=str(ckpt), device=device
+            arch, pretrained=str(ckpt), device=device
             )
+
+            # Memory optimization:
+            # RemoteCLIP FP32 is ~577 MB, which is too large for Render's 512 MB plan.
+            # FP16 reduces model parameter memory by roughly 50%.
+            if device == "cpu":
+                self.model = self.model.half()
+
             self.tokenizer = open_clip.get_tokenizer(arch)
             self.model.eval()
 
