@@ -67,8 +67,17 @@ def discovery_clusters():
         return json.load(f)
 @app.get("/health")
 def health():
-    r=get_retriever(); return {"status":"ok","vectors":r.count(),"model":r.model_name,"backend":r.embedding.backend,"device":r.device,"offline_runtime":settings.OFFLINE_ONLY,"change_backend":settings.CHANGE_BACKEND,"change_model_staged":bool(settings.CHANGE_MODEL_PATH and Path(settings.CHANGE_MODEL_PATH).exists())}
-
+    return {
+        "status": "ok",
+        "project": "SIH26227",
+        "service": "TerraVision Backend",
+        "offline_runtime": settings.OFFLINE_ONLY,
+        "change_backend": settings.CHANGE_BACKEND,
+        "change_model_staged": bool(
+            settings.CHANGE_MODEL_PATH
+            and Path(settings.CHANGE_MODEL_PATH).exists()
+        )
+    }
 @app.get("/scenes")
 def scenes(): return list_scenes()
 
